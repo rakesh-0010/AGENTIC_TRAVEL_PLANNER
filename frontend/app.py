@@ -1,11 +1,12 @@
+import os
 import streamlit as st
 import requests as r 
 
 st.title("AI TRAVEL PLANNER")
 
-st.subheader("enter all trip data")
+st.subheader("Enter all Trip Data")
 
-starting_loc=st.text_input("Enter Strting Location")
+starting_loc=st.text_input("Enter Starting Location")
 destination_loc=st.text_input("Enter Destination Location")
 no_of_trip_dys=st.number_input("Enter Trip Days")
 no_of_people=st.number_input("Enter People Count")
@@ -22,7 +23,12 @@ if btn:
         "budget":budget,
         "specifications":specifications
     }
-    be_res=r.post("http://127.0.0.1:8000/plan_trip",json=payload)
+    BACKEND_URL = os.getenv("BACKEND_URL", "http://127.0.0.1:8000")
+    be_res = r.post(
+    f"{BACKEND_URL}/plan_trip",
+    json=payload,
+    timeout=180
+)
     if be_res.status_code == 200:
         st.write(be_res.json()["content"])
     # r.get()
@@ -40,3 +46,7 @@ if btn:
 # pip install requests
 # python -m pip install requests
 # py -m pip install requests
+#cd be
+#>> py -m uvicorn main:f_obj --reload   
+#cd
+#>> py -m streamlit run fe\app.py

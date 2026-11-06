@@ -3,7 +3,6 @@ from fastapi import FastAPI
 from langchain_groq import ChatGroq
 
 
-
 # ----------------------------------------
 # FastAPI Object
 # ----------------------------------------
