@@ -17,6 +17,7 @@ app = f_obj
 
 llm = ChatGroq(
     model="openai/gpt-oss-20b",
+    max_tokens=8192,
     api_key=os.environ["GROQ_API_KEY"]
 )
 
@@ -330,7 +331,33 @@ IMPORTANT RULES
 11. If information is missing, make reasonable
     assumptions and clearly mention them.
 
-12. Return the response in a clean,
+12. Do not omit any of the 9 response sections.
+
+13. For every trip day, provide separate morning,
+    afternoon, evening and (when requested) nightlife
+    activities, with specific place names and short
+    explanations of why each place is worth visiting.
+
+14. Include estimated costs with currency and clearly
+    state whether each amount is per person or for the
+    entire group.
+
+15. Show both the total group cost and per-person cost.
+    Ensure category totals add up correctly. Never force
+    an unrealistic plan to fit the budget; explain any
+    shortfall and suggest realistic alternatives.
+
+16. For nightlife requests, suggest suitable areas and
+    types of venues. Mention that entry fees, events and
+    opening schedules can change. Do not claim live
+    availability or guaranteed entry.
+
+17. Make every section informative and specific, not
+    merely a list of headings. Use compact tables and
+    bullet points where useful. Complete every section
+    and every day; never stop halfway through a section.
+
+18. Return the response in a clean,
     structured format.
 
 Now create the complete travel plan.
