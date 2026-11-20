@@ -17,7 +17,7 @@ app = f_obj
 
 llm = ChatGroq(
     model="openai/gpt-oss-20b",
-    max_tokens=8192,
+    max_tokens=20000,
     api_key=os.environ["GROQ_API_KEY"]
 )
 
@@ -42,6 +42,20 @@ def plan_the_trip(payload: dict):
     no_of_people = payload["no_of_people"]
     budget = payload["budget"]
     specifications = payload["specifications"]
+
+    # Keep the entered budget in the traveller's expected currency.
+    raw_budget = str(budget).strip()
+    explicit_currency = payload.get("budget_currency") or payload.get("currency")
+    if explicit_currency:
+        budget_currency = str(explicit_currency).strip().upper()
+    elif "₹" in raw_budget or "INR" in raw_budget.upper():
+        budget_currency = "INR"
+    elif "$" in raw_budget or "USD" in raw_budget.upper():
+        budget_currency = "USD"
+    elif "India" in str(starting_loc) or str(starting_loc).strip().lower() in ("hyderabad", "india"):
+        budget_currency = "INR"
+    else:
+        budget_currency = "destination-local currency (state this assumption)"
 
 
     # ----------------------------------------
@@ -71,8 +85,9 @@ Number of Trip Days:
 Number of People:
 {no_of_people}
 
-Total Budget:
-{budget}
+Total Budget Entered by User: {budget} {budget_currency}
+
+CURRENCY RULE: Treat the entered numeric budget as {budget_currency}. Never silently convert or relabel it as USD. If you show a conversion, show the original amount first and label the conversion as approximate.
 
 Special Specifications:
 {specifications}
@@ -359,6 +374,12 @@ IMPORTANT RULES
 
 18. Return the response in a clean,
     structured format.
+19. Produce exactly {no_of_trip_dys} itinerary days, including outbound and return travel days. Do not stop at an intermediate day.
+20. Keep the response concise enough to fit in one complete answer: each day should have 2-4 activity bullets total plus a compact cost summary. Never repeat the full trip overview inside each day.
+21. Use currency codes (INR, USD, GBP) rather than symbols that may render as math. Clearly label each cost as per person or for all travellers.
+22. Count nights consistently with the travel dates and itinerary. Include the return journey to the starting location.
+23. Do not describe long-distance travel as a short same-day transfer. If a route or service is not known to operate, say it needs verification and suggest realistic alternatives.
+24. If the budget is insufficient, say so plainly. Never change the user's budget currency or invent a cheaper fare to make the plan appear affordable.
 
 Now create the complete travel plan.
 """
