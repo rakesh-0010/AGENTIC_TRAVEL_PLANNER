@@ -9,6 +9,7 @@ from langchain_groq import ChatGroq
 
 f_obj = FastAPI()
 
+app = f_obj 
 
 # ----------------------------------------
 # Groq LLM
@@ -347,4 +348,4 @@ Now create the complete travel plan.
     # Return response
     # ----------------------------------------
 
-    return res
+    return {"travel_plan": res.content}
