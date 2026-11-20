@@ -30,7 +30,7 @@ if btn:
     timeout=180
 )
     if be_res.status_code == 200:
-        st.write(be_res.json()["content"])
+        st.write(be_res.json()["travel_plan"])
     # r.get()
     # r.put()
     # r.delete()
